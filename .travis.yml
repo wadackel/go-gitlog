@@ -1,0 +1,13 @@
+language: go
+sudo: false
+go:
+  - 1.9
+before_install:
+  - go get -u github.com/golang/dep/...
+install:
+  - $GOPATH/bin/dep ensure
+script:
+  - go test -v
+branches:
+  only:
+    - master
