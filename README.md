@@ -1,5 +1,6 @@
 # go-gitlog
 
+[![godoc.org](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/tsuyoshiwada/go-gitlog)
 [![Travis](https://img.shields.io/travis/tsuyoshiwada/go-gitlog.svg?style=flat-square)](https://travis-ci.org/tsuyoshiwada/go-gitlog)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/tsuyoshiwada/go-gitlog/blob/master/LICENSE)
 
@@ -51,7 +52,7 @@ func main() {
 
 ### `$ git log <sha1|tag|ref>`
 
-Specification of `revisionrange` can be realized by giving a `RevArgs` interface.
+Specification of `revisionrange` can be realized by giving a [RevArgs](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevArgs) interface.
 
 ```go
 commits, err := git.Log("master", &gitlog.Rev{"5e312d5"}, nil)
@@ -60,7 +61,7 @@ commits, err := git.Log("master", &gitlog.Rev{"5e312d5"}, nil)
 
 ### `$ git log <sha1|tag|ref>..<sha1|tag|ref>`
 
-For double dot notation use `RevRange`.
+For double dot notation use [RevRange](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevRange).
 
 ```go
 commits, err := git.Log("master", &gitlog.RevRange{
@@ -72,7 +73,7 @@ commits, err := git.Log("master", &gitlog.RevRange{
 
 ### `$ git log -n <n>`
 
-Use `RevNumber` to get the specified number of commits.
+Use [RevNumber](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevNumber) to get the specified number of commits.
 
 ```go
 commits, err := git.Log("master", &gitlog.RevNumber{10}, nil)
@@ -81,7 +82,7 @@ commits, err := git.Log("master", &gitlog.RevNumber{10}, nil)
 
 ### `$ git log --since <time> --until <time>`
 
-Use `RevNumber` to get the specified number of commits.
+By using [RevTime](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevTime) you can specify the range by time.
 
 **Since and Until:**
 
