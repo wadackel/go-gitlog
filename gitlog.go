@@ -48,6 +48,7 @@ type Config struct {
 type Params struct {
 	MergesOnly   bool
 	IgnoreMerges bool
+	Reverse      bool
 }
 
 // GitLog is an interface for git-log acquisition
@@ -164,9 +165,11 @@ func (gitLog *gitLogImpl) buildArgs(rev RevArgs, params *Params) []string {
 		if params.IgnoreMerges {
 			args = append(args, "--no-merges")
 		}
-	}
 
-	args = append(args, ref)
+		if params.Reverse {
+			args = append(args, "--reverse")
+		}
+	}
 
 	if rev != nil {
 		revisions := rev.Args()

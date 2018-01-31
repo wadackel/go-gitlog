@@ -171,6 +171,35 @@ func TestGitLogIgnoreMerges(t *testing.T) {
 	assert.Equal(6, len(commits))
 }
 
+func TestGitLogReverse(t *testing.T) {
+	assert := assert.New(t)
+
+	clear := setup()
+	defer clear()
+
+	git := New(&Config{
+		Path: ".tmp",
+	})
+
+	commits, err := git.Log(nil, &Params{
+		Reverse: true,
+	})
+
+	assert.Nil(err)
+	assert.Equal(7, len(commits))
+
+	table := [][]string{
+		[]string{"chore(*): Initial Commit"},
+		[]string{"docs(readme): Has body commit message"},
+	}
+
+	for i, commit := range commits {
+		if len(table) >= i+1 {
+			assert.Equal(table[i][0], commit.Subject)
+		}
+	}
+}
+
 // FIXME: Time tests
 
 func TestGitLogNotFoundGitCommand(t *testing.T) {
