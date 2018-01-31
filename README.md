@@ -20,10 +20,7 @@ $ go get -u github.com/tsuyoshiwada/go-gitlog
 
 
 
-## Examples
-
-
-### `$ git log master`
+## Usage
 
 It is the simplest example.
 
@@ -37,17 +34,57 @@ import (
 
 func main() {
 	// New gitlog
-	git := gitlog.New(&gitlog.Config{})
+	git := gitlog.New(&gitlog.Config{
+		GitBin: "/your/custom/git/bin", // default "git"
+		Path: "/repo/path/to",          // default "."
+	})
 
 	// List git-log
-	commits, err := git.Log("master", nil, nil)
+	commits, err := git.Log(nil, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// `commits` -> []*gitlog.Commit{...}
+	// Output
+	for _, commit := range commits {
+		fmt.Printf(
+			"%s %s %s\n",
+			commit.Hash.Short,
+			commit.Author.Name,
+			commit.Subject,
+		)
+	}
 }
 ```
+
+See [godoc](https://godoc.org/github.com/tsuyoshiwada/go-gitlog) for API detail of [Log](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#GitLog) :+1:
+
+
+
+
+## Options
+
+By using [Params](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#Params) you can customize the log retrieval.
+
+
+### `MergesOnly`
+
+Give the `--merges` option.
+
+
+### `IgnoreMerges`
+
+Give the `--no-merges` option.
+
+
+### `Reverse`
+
+Give the `--reverse` option.
+
+
+
+
+## Examples
 
 
 ### `$ git log <sha1|tag|ref>`
@@ -55,7 +92,7 @@ func main() {
 Specification of `revisionrange` can be realized by giving a [RevArgs](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevArgs) interface.
 
 ```go
-commits, err := git.Log("master", &gitlog.Rev{"5e312d5"}, nil)
+commits, err := git.Log(&gitlog.Rev{"5e312d5"}, nil)
 ```
 
 
@@ -64,7 +101,7 @@ commits, err := git.Log("master", &gitlog.Rev{"5e312d5"}, nil)
 For double dot notation use [RevRange](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevRange).
 
 ```go
-commits, err := git.Log("master", &gitlog.RevRange{
+commits, err := git.Log(&gitlog.RevRange{
 	Old: "v0.1.7",
 	New: "v1.2.3",
 }, nil)
@@ -76,7 +113,7 @@ commits, err := git.Log("master", &gitlog.RevRange{
 Use [RevNumber](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevNumber) to get the specified number of commits.
 
 ```go
-commits, err := git.Log("master", &gitlog.RevNumber{10}, nil)
+commits, err := git.Log(&gitlog.RevNumber{10}, nil)
 ```
 
 
@@ -87,7 +124,7 @@ By using [RevTime](https://godoc.org/github.com/tsuyoshiwada/go-gitlog#RevTime) 
 **Since and Until:**
 
 ```go
-commits, err := git.Log("master", &gitlog.RevTime{
+commits, err := git.Log(&gitlog.RevTime{
 	Since: time.Date(2018, 3, 4, 23, 0, 0, time.UTC),
 	Until: time.Date(2018, 1, 2, 12, 0, 0, time.UTC),
 }, nil)
@@ -96,7 +133,7 @@ commits, err := git.Log("master", &gitlog.RevTime{
 **Only since:**
 
 ```go
-commits, err := git.Log("master", &gitlog.RevTime{
+commits, err := git.Log(&gitlog.RevTime{
 	Since: time.Date(2018, 1, 2, 12, 0, 0, time.UTC),
 }, nil)
 ```
@@ -104,7 +141,7 @@ commits, err := git.Log("master", &gitlog.RevTime{
 **Only until:**
 
 ```go
-commits, err := git.Log("master", &gitlog.RevTime{
+commits, err := git.Log(&gitlog.RevTime{
 	Until: time.Date(2018, 1, 2, 12, 0, 0, time.UTC),
 }, nil)
 ```
