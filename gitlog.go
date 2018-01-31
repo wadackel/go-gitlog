@@ -52,7 +52,7 @@ type Params struct {
 
 // GitLog is an interface for git-log acquisition
 type GitLog interface {
-	Log(string, RevArgs, *Params) ([]*Commit, error)
+	Log(RevArgs, *Params) ([]*Commit, error)
 }
 
 type gitLogImpl struct {
@@ -150,7 +150,7 @@ func (gitLog *gitLogImpl) isInsideWorkTree() error {
 }
 
 // Build command line args
-func (gitLog *gitLogImpl) buildArgs(ref string, rev RevArgs, params *Params) []string {
+func (gitLog *gitLogImpl) buildArgs(rev RevArgs, params *Params) []string {
 	args := []string{
 		"--no-decorate",
 		"--pretty=\"" + logFormat + "\"",
@@ -178,7 +178,7 @@ func (gitLog *gitLogImpl) buildArgs(ref string, rev RevArgs, params *Params) []s
 
 // Log internally uses the git command to get a list of git-logs
 // func (gitLog *gitLogImpl) Log(ref string, rev RevArgs) ([]*Commit, error) {
-func (gitLog *gitLogImpl) Log(ref string, rev RevArgs, params *Params) ([]*Commit, error) {
+func (gitLog *gitLogImpl) Log(rev RevArgs, params *Params) ([]*Commit, error) {
 	// Can execute the git command?
 	if err := gitLog.canExecuteGit(); err != nil {
 		return nil, err
@@ -198,7 +198,7 @@ func (gitLog *gitLogImpl) Log(ref string, rev RevArgs, params *Params) ([]*Commi
 	}
 
 	// Dump git-log
-	args := gitLog.buildArgs(ref, rev, params)
+	args := gitLog.buildArgs(rev, params)
 
 	out, err := gitLog.git("log", args...)
 	if err != nil {

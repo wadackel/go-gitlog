@@ -78,7 +78,7 @@ func TestGitLog(t *testing.T) {
 		Path: ".tmp",
 	})
 
-	commits, err := git.Log("master", nil, nil)
+	commits, err := git.Log(nil, nil)
 
 	assert.Nil(err)
 	assert.Equal(7, len(commits))
@@ -120,7 +120,7 @@ func TestGitLogNumber(t *testing.T) {
 		Path: ".tmp",
 	})
 
-	commits, err := git.Log("master", &RevNumber{2}, nil)
+	commits, err := git.Log(&RevNumber{2}, nil)
 
 	assert.Nil(err)
 	assert.Equal(2, len(commits))
@@ -145,7 +145,7 @@ func TestGitLogMergesOnly(t *testing.T) {
 		Path: ".tmp",
 	})
 
-	commits, err := git.Log("master", nil, &Params{
+	commits, err := git.Log(nil, &Params{
 		MergesOnly: true,
 	})
 
@@ -163,7 +163,7 @@ func TestGitLogIgnoreMerges(t *testing.T) {
 		Path: ".tmp",
 	})
 
-	commits, err := git.Log("master", nil, &Params{
+	commits, err := git.Log(nil, &Params{
 		IgnoreMerges: true,
 	})
 
@@ -184,7 +184,7 @@ func TestGitLogNotFoundGitCommand(t *testing.T) {
 		Path:   ".tmp",
 	})
 
-	commits, err := git.Log("master", &RevAll{}, nil)
+	commits, err := git.Log(nil, nil)
 
 	assert.Nil(commits)
 	assert.Contains(err.Error(), "does not exists")
@@ -201,7 +201,7 @@ func TestGitLogNotFoundPath(t *testing.T) {
 		Path:   "/notfound/repo",
 	})
 
-	commits, err := git.Log("master", &RevAll{}, nil)
+	commits, err := git.Log(nil, nil)
 
 	assert.Nil(commits)
 	assert.Contains(err.Error(), "no such file or directory")
