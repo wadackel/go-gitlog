@@ -21,6 +21,12 @@ type Author struct {
 	Date  time.Time
 }
 
+// Tag of commit
+type Tag struct {
+	Name string
+	Date time.Time
+}
+
 // Committer of commit
 type Committer struct {
 	Name  string
@@ -34,6 +40,7 @@ type Commit struct {
 	Tree      *Tree
 	Author    *Author
 	Committer *Committer
+	Tag       *Tag
 	Subject   string
 	Body      string
 }

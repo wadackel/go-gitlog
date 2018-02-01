@@ -46,6 +46,9 @@ func setup() func() {
 	// master
 	gitCommit("chore(*): Initial Commit")
 
+	// v1.0.0
+	git("tag", "v1.0.0")
+
 	// topic
 	git("checkout", "-b", "topic")
 	gitCommit("docs(readme): Has body commit message\n\nThis is commit message body.\nThere are no problems on multiple lines :)")
@@ -57,9 +60,19 @@ func setup() func() {
 	// merge
 	git("merge", "--no-ff", "topic", "-m", "Merge pull request #12 from tsuyoshiwada/topic")
 
+	// 2.1.0
+	git("tag", "2.1.0")
+
 	gitCommit("fix(logger): Fix bar function")
 	gitCommit("style(*): Run GoFmt")
+
+	// v3.0.0-rc.10
+	git("tag", "v3.0.0-rc.10")
+
 	gitCommit("chore(release): Bump version to v0.0.0")
+
+	// 3.6.4-beta.12
+	git("tag", "3.6.4-beta.12")
 
 	os.Chdir(cwd)
 
@@ -108,13 +121,13 @@ func TestGitLog(t *testing.T) {
 	assert.Equal(7, len(commits))
 
 	table := [][]string{
-		[]string{"chore(release): Bump version to v0.0.0", ""},
-		[]string{"style(*): Run GoFmt", ""},
-		[]string{"fix(logger): Fix bar function", ""},
-		[]string{"Merge pull request #12 from tsuyoshiwada/topic", ""},
-		[]string{"feat(parser): Add foo feature", ""},
-		[]string{"docs(readme): Has body commit message", "This is commit message body.\nThere are no problems on multiple lines :)"},
-		[]string{"chore(*): Initial Commit", ""},
+		[]string{"chore(release): Bump version to v0.0.0", "", "3.6.4-beta.12"},
+		[]string{"style(*): Run GoFmt", "", "v3.0.0-rc.10"},
+		[]string{"fix(logger): Fix bar function", "", ""},
+		[]string{"Merge pull request #12 from tsuyoshiwada/topic", "", "2.1.0"},
+		[]string{"feat(parser): Add foo feature", "", ""},
+		[]string{"docs(readme): Has body commit message", "This is commit message body.\nThere are no problems on multiple lines :)", ""},
+		[]string{"chore(*): Initial Commit", "", "v1.0.0"},
 	}
 
 	for i, commit := range commits {
@@ -131,6 +144,7 @@ func TestGitLog(t *testing.T) {
 
 		assert.Equal(expect[0], commit.Subject)
 		assert.Equal(expect[1], commit.Body)
+		assert.Equal(expect[2], commit.Tag.Name)
 	}
 }
 

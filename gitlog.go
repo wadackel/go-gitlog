@@ -18,6 +18,7 @@ const (
 	committerField = "COMMITTER"
 	subjectField   = "SUBJECT"
 	bodyField      = "BODY"
+	tagField       = "TAG"
 
 	hashFormat      = hashField + ":%H %h"
 	treeFormat      = treeField + ":%T %t"
@@ -25,6 +26,7 @@ const (
 	committerFormat = committerField + ":%cn<%ce>[%ct]"
 	subjectFormat   = subjectField + ":%s"
 	bodyFormat      = bodyField + ":%b"
+	tagFormat       = tagField + ":%D"
 
 	separator = "@@__GIT_LOG_SEPARATOR__@@"
 	delimiter = "@@__GIT_LOG_DELIMITER__@@"
@@ -34,6 +36,7 @@ const (
 		treeFormat + delimiter +
 		authorFormat + delimiter +
 		committerFormat + delimiter +
+		tagFormat + delimiter +
 		subjectFormat + delimiter +
 		bodyFormat
 )

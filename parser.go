@@ -2,6 +2,7 @@ package gitlog
 
 import (
 	"errors"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -43,12 +44,16 @@ func (p *parser) parseCommit(str *string) *Commit {
 			commit.Author = p.parseAuthor(&content)
 		case committerField:
 			commit.Committer = p.parseCommitter(&content)
+		case tagField:
+			commit.Tag = p.parseTag(&content)
 		case subjectField:
 			commit.Subject = p.parseSubject(&content)
 		case bodyField:
 			commit.Body = p.parseBody(&content)
 		}
 	}
+
+	commit.Tag.Date = commit.Author.Date
 
 	return commit
 }
@@ -98,6 +103,21 @@ func (p *parser) parseCommitter(str *string) *Committer {
 		author.Email,
 		author.Date,
 	}
+}
+
+var tagRegex = regexp.MustCompile("tag:\\s([\\w\\.\\-_/]+)")
+
+func (p *parser) parseTag(str *string) *Tag {
+	res := tagRegex.FindAllStringSubmatch(*str, -1)
+	tag := &Tag{
+		Name: "",
+	}
+
+	if len(res) > 0 {
+		tag.Name = res[0][1]
+	}
+
+	return tag
 }
 
 func (*parser) convNewline(str *string) string {
