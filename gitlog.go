@@ -63,14 +63,17 @@ type gitLogImpl struct {
 
 // New GitLog interface
 func New(config *Config) GitLog {
-	bin := config.GitBin
-	if bin == "" {
-		bin = "git"
-	}
+	bin := "git"
+	path := "path"
 
-	path := config.Path
-	if path == "" {
-		path = "."
+	if config != nil {
+		if config.GitBin != "" {
+			bin = config.GitBin
+		}
+
+		if config.Path != "" {
+			path = config.Path
+		}
 	}
 
 	return &gitLogImpl{

@@ -68,6 +68,30 @@ func setup() func() {
 	}
 }
 
+func TestNewGitLog(t *testing.T) {
+	assert := assert.New(t)
+
+	assert.NotPanics(func() {
+		New(nil)
+	})
+
+	assert.NotPanics(func() {
+		New(&Config{})
+	})
+
+	assert.NotPanics(func() {
+		New(&Config{
+			GitBin: "",
+		})
+	})
+
+	assert.NotPanics(func() {
+		New(&Config{
+			Path: "",
+		})
+	})
+}
+
 func TestGitLog(t *testing.T) {
 	assert := assert.New(t)
 
