@@ -24,3 +24,7 @@
 [[constraint]]
   name = "github.com/stretchr/testify"
   version = "1.2.0"
+
+[[constraint]]
+  name = "github.com/tsuyoshiwada/go-gitcmd"
+  version = "0.0.1"

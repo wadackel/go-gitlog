@@ -1,14 +1,11 @@
+// Package gitlog is providing a means to handle git-log.
 package gitlog
 
 import (
-	"bytes"
-	"fmt"
-	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
-	"syscall"
+
+	gitcmd "github.com/tsuyoshiwada/go-gitcmd"
 )
 
 const (
@@ -60,6 +57,7 @@ type GitLog interface {
 }
 
 type gitLogImpl struct {
+	client gitcmd.Client
 	parser *parser
 	config *Config
 }
@@ -80,6 +78,9 @@ func New(config *Config) GitLog {
 	}
 
 	return &gitLogImpl{
+		client: gitcmd.New(&gitcmd.Config{
+			Bin: bin,
+		}),
 		parser: &parser{},
 		config: &Config{
 			Bin:  bin,
@@ -111,49 +112,6 @@ func (gitLog *gitLogImpl) workdir() (func() error, error) {
 	}
 
 	return back, nil
-}
-
-// Check if the `git` command can be executed
-func (gitLog *gitLogImpl) canExecuteGit() error {
-	_, err := exec.LookPath(gitLog.config.Bin)
-	if err != nil {
-		return fmt.Errorf("\"%s\" does not exists", gitLog.config.Bin)
-	}
-	return nil
-}
-
-// git command execute
-func (gitLog *gitLogImpl) git(subcmd string, args ...string) (string, error) {
-	gitArgs := append([]string{subcmd}, args...)
-
-	var out bytes.Buffer
-	cmd := exec.Command(gitLog.config.Bin, gitArgs...)
-	cmd.Stdout = &out
-	cmd.Stderr = ioutil.Discard
-
-	err := cmd.Run()
-	if exitError, ok := err.(*exec.ExitError); ok {
-		if waitStatus, ok := exitError.Sys().(syscall.WaitStatus); ok {
-			if waitStatus.ExitStatus() != 0 {
-				return "", err
-			}
-		}
-	}
-
-	return strings.TrimRight(strings.TrimSpace(out.String()), "\000"), nil
-}
-
-func (gitLog *gitLogImpl) isInsideWorkTree() error {
-	out, err := gitLog.git("rev-parse", "--is-inside-work-tree")
-	if err != nil {
-		return err
-	}
-
-	if out != "true" {
-		return fmt.Errorf("\"%s\" is no git repository", gitLog.config.Path)
-	}
-
-	return nil
 }
 
 // Build command line args
@@ -189,7 +147,7 @@ func (gitLog *gitLogImpl) buildArgs(rev RevArgs, params *Params) []string {
 // func (gitLog *gitLogImpl) Log(ref string, rev RevArgs) ([]*Commit, error) {
 func (gitLog *gitLogImpl) Log(rev RevArgs, params *Params) ([]*Commit, error) {
 	// Can execute the git command?
-	if err := gitLog.canExecuteGit(); err != nil {
+	if err := gitLog.client.CanExec(); err != nil {
 		return nil, err
 	}
 
@@ -201,7 +159,7 @@ func (gitLog *gitLogImpl) Log(rev RevArgs, params *Params) ([]*Commit, error) {
 	defer back()
 
 	// Check inside work tree
-	err = gitLog.isInsideWorkTree()
+	err = gitLog.client.InsideWorkTree()
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +167,7 @@ func (gitLog *gitLogImpl) Log(rev RevArgs, params *Params) ([]*Commit, error) {
 	// Dump git-log
 	args := gitLog.buildArgs(rev, params)
 
-	out, err := gitLog.git("log", args...)
+	out, err := gitLog.client.Exec("log", args...)
 	if err != nil {
 		return nil, err
 	}

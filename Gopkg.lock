@@ -19,9 +19,15 @@
   revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
   version = "v1.2.0"
 
+[[projects]]
+  name = "github.com/tsuyoshiwada/go-gitcmd"
+  packages = ["."]
+  revision = "5f1f5f9475df211f8b48620d704284d7375229c3"
+  version = "0.0.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a9dd4821c4522b2069722c1be94b191e7aff1736aeb5c12ab0070f87cdbc5af2"
+  inputs-digest = "c872fddf6a183edf839e6ce9667790a5b2ca9a9f25ab76c609a6f8eaa0344250"
   solver-name = "gps-cdcl"
   solver-version = 1
