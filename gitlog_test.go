@@ -94,7 +94,7 @@ func TestNewGitLog(t *testing.T) {
 
 	assert.NotPanics(func() {
 		New(&Config{
-			GitBin: "",
+			Bin: "",
 		})
 	})
 
@@ -247,8 +247,8 @@ func TestGitLogNotFoundGitCommand(t *testing.T) {
 	defer clear()
 
 	git := New(&Config{
-		GitBin: "/notfound/git/bin",
-		Path:   ".tmp",
+		Bin:  "/notfound/git/bin",
+		Path: ".tmp",
 	})
 
 	commits, err := git.Log(nil, nil)
@@ -264,8 +264,8 @@ func TestGitLogNotFoundPath(t *testing.T) {
 	defer clear()
 
 	git := New(&Config{
-		GitBin: "git",
-		Path:   "/notfound/repo",
+		Bin:  "git",
+		Path: "/notfound/repo",
 	})
 
 	commits, err := git.Log(nil, nil)

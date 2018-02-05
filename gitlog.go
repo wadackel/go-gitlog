@@ -43,8 +43,8 @@ const (
 
 // Config for getting git-log
 type Config struct {
-	GitBin string // default "git"
-	Path   string // default "."
+	Bin  string // default "git"
+	Path string // default "."
 }
 
 // Params for getting git-log
@@ -70,8 +70,8 @@ func New(config *Config) GitLog {
 	path := "path"
 
 	if config != nil {
-		if config.GitBin != "" {
-			bin = config.GitBin
+		if config.Bin != "" {
+			bin = config.Bin
 		}
 
 		if config.Path != "" {
@@ -82,8 +82,8 @@ func New(config *Config) GitLog {
 	return &gitLogImpl{
 		parser: &parser{},
 		config: &Config{
-			GitBin: bin,
-			Path:   path,
+			Bin:  bin,
+			Path: path,
 		},
 	}
 }
@@ -115,9 +115,9 @@ func (gitLog *gitLogImpl) workdir() (func() error, error) {
 
 // Check if the `git` command can be executed
 func (gitLog *gitLogImpl) canExecuteGit() error {
-	_, err := exec.LookPath(gitLog.config.GitBin)
+	_, err := exec.LookPath(gitLog.config.Bin)
 	if err != nil {
-		return fmt.Errorf("\"%s\" does not exists", gitLog.config.GitBin)
+		return fmt.Errorf("\"%s\" does not exists", gitLog.config.Bin)
 	}
 	return nil
 }
@@ -127,7 +127,7 @@ func (gitLog *gitLogImpl) git(subcmd string, args ...string) (string, error) {
 	gitArgs := append([]string{subcmd}, args...)
 
 	var out bytes.Buffer
-	cmd := exec.Command(gitLog.config.GitBin, gitArgs...)
+	cmd := exec.Command(gitLog.config.Bin, gitArgs...)
 	cmd.Stdout = &out
 	cmd.Stderr = ioutil.Discard
 

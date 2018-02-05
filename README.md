@@ -35,8 +35,8 @@ import (
 func main() {
 	// New gitlog
 	git := gitlog.New(&gitlog.Config{
-		GitBin: "/your/custom/git/bin", // default "git"
-		Path: "/repo/path/to",          // default "."
+		Bin:  "/your/custom/git/bin", // default "git"
+		Path: "/repo/path/to",        // default "."
 	})
 
 	// List git-log
