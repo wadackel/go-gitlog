@@ -28,15 +28,17 @@ It is the simplest example.
 package main
 
 import (
+	"fmt"
 	"log"
+
 	"github.com/tsuyoshiwada/go-gitlog"
 )
 
 func main() {
 	// New gitlog
 	git := gitlog.New(&gitlog.Config{
-		Bin:  "/your/custom/git/bin", // default "git"
-		Path: "/repo/path/to",        // default "."
+		GitBin: "/your/custom/git/bin", // default "git"
+		Path:   "/repo/path/to",        // default "."
 	})
 
 	// List git-log
